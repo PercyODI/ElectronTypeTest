@@ -1,5 +1,18 @@
-/// <reference path="../node_modules/@types/jquery/index.d.ts" />
-
+import * as $ from "jquery";
 import { line } from "./models/line";
+import * as fabric from "fabric";
 
-$('#canvas').click(() => alert("Testing!"));
+// const $ = jQuery;
+
+const lines: line[] = [];
+const dragging: boolean = false;
+const canvas = new fabric.Canvas("canvas");
+const rect = new fabric.Rect({
+    left: 100,
+    top: 100,
+    fill: "red",
+    width: 20,
+    height: 20,
+});
+
+canvas.add(rect);
