@@ -4,13 +4,19 @@
 <head>
   <meta charset="UTF-8">
   <title>Hello World!</title>
+  <link rel="stylesheet" href="index.css">
 </head>
 
 <body>
-  <h1>Hello World!</h1>
-  <canvas id="canvas" width="500" height="200" style="border: 1px solid black"></canvas>
-
-
+  <div id="viewWrapper">
+    <div id="navBar"></div>
+    <div id="scoreWrapper">
+      <div id="leftScore"></div>
+      <div id="rightScore"></div>
+    </div>
+  </div>
+  
+  <script src="./node_modules/pdfjs-dist/build/pdf.js"></script>
   <script src="./lib/easeljs/easeljs.min.js"></script>
   <script>
     // window.$ = window.jQuery = require('jquery')

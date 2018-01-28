@@ -1,0 +1,24 @@
+#viewWrapper, html, body {
+    height: 100%;
+    margin: 0;
+}
+
+#viewWrapper {
+    display: flex;
+    flex-direction: column;
+}
+
+#navBar {
+    border: 1px solid black;
+}
+
+#scoreWrapper {
+    flex: 1;
+    display: flex;
+}
+
+#leftScore, #rightScore {
+    flex: 1;
+    border: 1px solid black;
+    overflow: scroll;
+}
