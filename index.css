@@ -20,5 +20,10 @@
 #leftScore, #rightScore {
     flex: 1;
     border: 1px solid black;
-    overflow: scroll;
+    overflow: auto;
+}
+
+#leftScore {
+    display: flex;
+    justify-content: flex-end;
 }

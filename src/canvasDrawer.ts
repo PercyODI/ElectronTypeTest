@@ -30,100 +30,6 @@ $(document).ready(() => {
     sizeDiv.append(buildButton("Normal", () => changeSize(5)));
     sizeDiv.append(buildButton("Large", () => changeSize(8)));
 
-    // otherOptionsDiv.append(buildButton("Clear Stage", () => clearStage()));
-
-    // let lines: line[] = [];
-    // const circlesForLines: createjs.Shape[] = [];
-    // const dragging: boolean = false;
-
-    // var stage = new createjs.Stage(easelCanvas.get(0) as HTMLCanvasElement);
-    // var circle = new createjs.Shape();
-    // circle.graphics.beginFill("DeepSkyBlue").drawCircle(0, 0, 50);
-    // circle.x = 100;
-    // circle.y = 100;
-    // stage.addChild(circle);
-
-    // updateStage();
-
-    // let mouseDown: boolean = false;
-    // stage.on("stagemousedown", (event: any) => {
-    //     mouseDown = true;
-    //     startNewStageLine(event.stageX, event.stageY, currentSize, currentColor);
-    // });
-
-    // stage.on("stagemousemove", (event: any) => {
-    //     if (mouseDown) {
-    //         endNewStageLine(event.stageX, event.stageY);
-    //         startNewStageLine(event.stageX, event.stageY, currentSize, currentColor);
-    //     }
-    // })
-
-    // stage.on("stagemouseup", (event: any) => {
-    //     mouseDown = false;
-    //     endNewStageLine(event.stageX, event.stageY);
-    // })
-
-    // function drawStageCircle(x: number, y: number, radius: number, color: string) {
-    //     var newCircle = new createjs.Shape();
-    //     newCircle.graphics
-    //         .beginFill("black")
-    //         .drawCircle(x, y, radius);
-    //     stage.addChild(newCircle);
-    //     updateStage();
-    // }
-
-    // let startedLine: createjs.Shape = null;
-    // let startedSavedLine: line = null;
-    // function startNewStageLine(x: number, y: number, radius: number, color: string) {
-    //     if (startedLine !== null) {
-    //         console.log("startedLine is not null");
-    //         return;
-    //     }
-
-    //     startedLine = new createjs.Shape();
-    //     startedLine.graphics.beginStroke(color);
-    //     startedLine.graphics.setStrokeStyle(radius, 'round', 'round');
-    //     startedLine.graphics.moveTo(x, y);
-
-    //     startedSavedLine = {
-    //         radius: radius,
-    //         color: color,
-    //         startX: x,
-    //         startY: y,
-    //     }
-    // }
-
-    // function endNewStageLine(x: number, y: number) {
-    //     if (startedLine === null) {
-    //         console.log("startedLine is null")
-    //         return;
-    //     }
-
-    //     startedLine.graphics.lineTo(x, y);
-
-    //     let minX = Math.min(startedSavedLine.startX, x) - startedSavedLine.radius;
-    //     let minY = Math.min(startedSavedLine.startY, y) - startedSavedLine.radius;
-    //     let width = Math.max(startedSavedLine.startX, x) + startedSavedLine.radius;
-    //     let height = Math.max(startedSavedLine.startY, y) + startedSavedLine.radius;
-    //     startedLine.cache(minX, minY, width, height);
-    //     stage.addChild(startedLine);
-
-    //     startedSavedLine.endX = x;
-    //     startedSavedLine.endY = y;
-    //     lines.push(startedSavedLine);
-
-    //     updateStage();
-
-    //     startedLine = null;
-    //     startedSavedLine = null;
-    // }
-
-    // function clearStage() {
-    //     stage.removeAllChildren();
-    //     stage.update();
-    //     lines = [];
-    // }
-
     // Interface Functions
     let currentColor: string = "black";
     let currentSize: number = 5;
@@ -148,7 +54,7 @@ $(document).ready(() => {
     // }
 
 
-    var something = PDFJS.getDocument("./pdfs/Example.pdf")
+    var something = PDFJS.getDocument("./pdfs/Bye-Bye-Birdie-Full-Score-Vol-1.pdf")
         .then(pdf => {
             console.log("Processed PDF");
             pdf.getPage(1).then(page => {
@@ -161,6 +67,18 @@ $(document).ready(() => {
                 $(window).resize(() => {
                     console.log("Resizing!")
                     sp.resize(leftScore.width(), leftScore.height());
+                })
+            })
+            pdf.getPage(2).then(page => {
+                console.log("Processed page");
+                let sp = new ScorePage(page);
+                let rightScore = $("#rightScore");
+                rightScore.append(sp.scoreWrapper);
+
+                sp.resize(rightScore.width(), rightScore.height());
+                $(window).resize(() => {
+                    console.log("Resizing!")
+                    sp.resize(rightScore.width(), rightScore.height());
                 })
             })
         });

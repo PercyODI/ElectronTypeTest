@@ -1,4 +1,4 @@
-import { PDFPageProxy, PDFRenderTask } from "pdfjs-dist";
+import { PDFPageProxy } from "pdfjs-dist";
 import * as $ from "jquery";
 import { isUndefined } from "util";
 
@@ -25,34 +25,41 @@ class ScorePage {
 
     private setupPdfAndDrawingCanvas(scale?: number) {
         if (scale === null || scale === undefined) scale = 1;
-        let viewport = this.pdfPage.getViewport(scale);
-        // var scale = width / viewport.width;
-        // viewport = this.pdfPage.getViewport(scale);
 
-        let drawingCanvas = (this.drawingJqCanvas.get(0) as HTMLCanvasElement);
+        // Get Viewport with specified scale
+        let viewport = this.pdfPage.getViewport(scale);
+
+        // Set PDF Canvas Size and Render
         let pdfCanvas = (this.pdfJqCanvas.get(0) as HTMLCanvasElement);
         let context = pdfCanvas.getContext("2d");
 
         pdfCanvas.height = viewport.height;
         pdfCanvas.width = viewport.width;
+        
+        this.pdfPage.render({
+            canvasContext: context,
+            viewport: viewport,
+        })
 
+        // Set Drawing Canvas Size
         if (scale == 1) {
             this.originalSize = {
                 height: viewport.height,
                 width: viewport.width
             }
         }
+        let drawingCanvas = (this.drawingJqCanvas.get(0) as HTMLCanvasElement);
         drawingCanvas.height = this.originalSize.height;
-        drawingCanvas.width = this.originalSize.width;
+        drawingCanvas.width = this.originalSize.width; 
         this.drawingJqCanvas.css("width", Math.floor(viewport.width));
 
-        this.pdfPage.render({
-            canvasContext: context,
-            viewport: viewport,
-        })
-
+        // Set both the PDF and Drawing positions to absolute (0, 0)
         this.setCanvasPositionToAbsolute0();
         console.log(`Pos: ${JSON.stringify(this.pdfJqCanvas.position())}`)
+
+        // Set the wrapping div to the width of the PDF
+        // (for alignment reasons)
+        this.scoreWrapper.width(viewport.width);
     }
 
     private setupDOM() {
