@@ -1,5 +1,6 @@
-import { PDFPageProxy } from "pdfjs-dist";
+import { PDFPageProxy, PDFRenderTask } from "pdfjs-dist";
 import * as $ from "jquery";
+import { isUndefined } from "util";
 
 interface size {
     width: number,
@@ -17,8 +18,13 @@ class ScorePage {
     constructor(pdfPage: PDFPageProxy) {
         this.pdfPage = pdfPage;
         this.setupDOM();
+        this.setupPdfAndDrawingCanvas();
+        this.setupStage();
+    }
 
-        let viewport = this.pdfPage.getViewport(1);
+    private setupPdfAndDrawingCanvas(scale?: number) {
+        if (scale === null || scale === undefined) scale = 1;
+        let viewport = this.pdfPage.getViewport(scale);
         // var scale = width / viewport.width;
         // viewport = this.pdfPage.getViewport(scale);
 
@@ -32,36 +38,70 @@ class ScorePage {
         drawingCanvas.height = viewport.height;
         drawingCanvas.width = viewport.width;
 
-        this.drawingStage = new createjs.Stage(drawingCanvas);
-        this.drawingStage.update();
-
         this.pdfPage.render({
             canvasContext: context,
             viewport: viewport,
         })
 
-        this.setupStage();
+        this.setCanvasPositionToAbsolute0();
+        console.log(`Pos: ${JSON.stringify(this.pdfJqCanvas.position())}`)
     }
 
     private setupDOM() {
+        if (this.scoreWrapper === undefined || this.scoreWrapper === null) {
+            console.log("Making new Score Wrapper")
+            this.scoreWrapper = $("<div>")
+                .css("position", "relative");
+        }
         this.pdfJqCanvas = $("<canvas>");
         this.drawingJqCanvas = $("<canvas>");
 
-        this.scoreWrapper = $("<div>")
-            .css("position", "relative");
-
         this.scoreWrapper.append(this.pdfJqCanvas);
+        this.scoreWrapper.append(this.drawingJqCanvas);
+    }
+
+    private setCanvasPositionToAbsolute0() {
         this.pdfJqCanvas
-            .offset({ top: 0, left: 0 })
+            .css("top", 0)
+            .css("left", 0)
             .css("position", "absolute");
 
-        this.scoreWrapper.append(this.drawingJqCanvas);
         this.drawingJqCanvas
-            .offset({ top: 0, left: 0 })
+            .css("top", 0)
+            .css("left", 0)
             .css("position", "absolute");
     }
 
-    private setupStage() {
+    private removeDOM() {
+        this.scoreWrapper.children().remove();
+        this.pdfJqCanvas = undefined;
+        this.drawingJqCanvas = undefined;
+        this.drawingStage = undefined;
+    }
+
+    dots: {x: number, y: number}[] = [];
+
+    private setupStage(scale?: number) {
+        if(scale === null || scale === undefined) scale = 1;
+        let drawingCanvas = (this.drawingJqCanvas.get(0) as HTMLCanvasElement);
+        this.drawingStage = new createjs.Stage(drawingCanvas);
+        // this.drawingStage.scaleX = scale;
+        // this.drawingStage.scaleY = scale;
+        this.drawingStage.update();
+
+        let inverseScale = 1 / scale;
+
+        if(this.dots.length > 0){
+            this.dots.forEach(dot => {
+                var newCircle = new createjs.Shape();
+                newCircle.graphics
+                    .beginFill("black")
+                    .drawCircle(dot.x * inverseScale, dot.y * inverseScale, 5);
+                this.drawingStage.addChild(newCircle);
+                this.drawingStage.update();
+            });
+        }
+
         this.drawingStage.on("stagemousedown", (event: createjs.MouseEvent) => {
             var newCircle = new createjs.Shape();
             newCircle.graphics
@@ -69,21 +109,20 @@ class ScorePage {
                 .drawCircle(event.stageX, event.stageY, 5);
             this.drawingStage.addChild(newCircle);
             this.drawingStage.update();
+
+            this.dots.push({x: event.stageX * scale, y: event.stageY * scale});
         })
     }
 
     public resize(width: number, height: number): void {
-        let canvases = this.drawingJqCanvas.add(this.pdfJqCanvas);
-        canvases
-            .css("width", "")
-            .css("height", "");
 
-        canvases.css("width", width);
-        if (canvases.height() > height) {
-            canvases
-                .css("width", "")
-                .css("height", height);
-        }
+        let viewport = this.pdfPage.getViewport(1);
+        var scale = Math.min(width / viewport.width, height / viewport.height);
+
+        this.removeDOM();
+        this.setupDOM();
+        this.setupPdfAndDrawingCanvas(scale);
+        this.setupStage(scale);
     }
 }
 
