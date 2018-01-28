@@ -14,6 +14,7 @@ class ScorePage {
     drawingJqCanvas: JQuery<HTMLElement>;
     drawingStage: createjs.Stage;
     scoreWrapper: JQuery<HTMLElement>;
+    originalSize: size;
 
     constructor(pdfPage: PDFPageProxy) {
         this.pdfPage = pdfPage;
@@ -35,8 +36,15 @@ class ScorePage {
         pdfCanvas.height = viewport.height;
         pdfCanvas.width = viewport.width;
 
-        drawingCanvas.height = viewport.height;
-        drawingCanvas.width = viewport.width;
+        if (scale == 1) {
+            this.originalSize = {
+                height: viewport.height,
+                width: viewport.width
+            }
+        }
+        drawingCanvas.height = this.originalSize.height;
+        drawingCanvas.width = this.originalSize.width;
+        this.drawingJqCanvas.css("width", Math.floor(viewport.width));
 
         this.pdfPage.render({
             canvasContext: context,
@@ -79,24 +87,20 @@ class ScorePage {
         this.drawingStage = undefined;
     }
 
-    dots: {x: number, y: number}[] = [];
+    dots: { x: number, y: number }[] = [];
 
-    private setupStage(scale?: number) {
-        if(scale === null || scale === undefined) scale = 1;
+    private setupStage() {
         let drawingCanvas = (this.drawingJqCanvas.get(0) as HTMLCanvasElement);
         this.drawingStage = new createjs.Stage(drawingCanvas);
-        // this.drawingStage.scaleX = scale;
-        // this.drawingStage.scaleY = scale;
+
         this.drawingStage.update();
 
-        let inverseScale = 1 / scale;
-
-        if(this.dots.length > 0){
+        if (this.dots.length > 0) {
             this.dots.forEach(dot => {
                 var newCircle = new createjs.Shape();
                 newCircle.graphics
                     .beginFill("black")
-                    .drawCircle(dot.x * inverseScale, dot.y * inverseScale, 5);
+                    .drawCircle(dot.x, dot.y, 5);
                 this.drawingStage.addChild(newCircle);
                 this.drawingStage.update();
             });
@@ -110,7 +114,7 @@ class ScorePage {
             this.drawingStage.addChild(newCircle);
             this.drawingStage.update();
 
-            this.dots.push({x: event.stageX * scale, y: event.stageY * scale});
+            this.dots.push({ x: event.stageX, y: event.stageY });
         })
     }
 
@@ -122,7 +126,7 @@ class ScorePage {
         this.removeDOM();
         this.setupDOM();
         this.setupPdfAndDrawingCanvas(scale);
-        this.setupStage(scale);
+        this.setupStage();
     }
 }
 
