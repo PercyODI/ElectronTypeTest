@@ -24,6 +24,7 @@
   "license": "CC0-1.0",
   "devDependencies": {
     "@types/pdfjs-dist": "^0.1.1",
+    "@types/shortid": "0.0.29",
     "electron": "^1.8.1",
     "electron-packager": "^10.1.1",
     "tslint": "^5.9.1",
@@ -32,9 +33,11 @@
   "dependencies": {
     "@types/easeljs": "^1.0.0",
     "@types/jquery": "^3.3.0",
+    "@types/lodash": "^4.14.97",
     "@types/pdf": "0.0.31",
     "jquery": "^3.3.1",
     "lodash": "^4.17.4",
-    "pdfjs-dist": "^2.0.301"
+    "pdfjs-dist": "^2.0.301",
+    "shortid": "^2.2.8"
   }
 }

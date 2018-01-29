@@ -1,2 +1,2 @@
-export {line} from './line';
-export {ScorePage} from './scorePage';
+export {ILine} from "./line";
+export {ScorePage} from "./scorePage";
