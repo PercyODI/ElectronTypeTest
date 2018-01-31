@@ -1,14 +1,14 @@
 /// <reference path="../node_modules/@types/easeljs/index.d.ts" />
 
 import * as $ from "jquery";
-import { line, ScorePage } from "./models";
+import { ILine, ScorePage } from "./models";
 // import { PDFJSStatic } from 'pdfjs-dist';
 
 // const $ = jQuery;
 $(document).ready(() => {
     const navBar = $("#navBar");
 
-    let optionsDiv = $("<div>");
+    const optionsDiv = $("<div>");
     navBar.append(optionsDiv);
 
     // Add interface things
@@ -16,11 +16,11 @@ $(document).ready(() => {
     // let devDiv = $("<div>");
     // navBar.after(devDiv);
 
-    let colorDiv = $("<div>").html("Colors: ");
+    const colorDiv = $("<div>").html("Colors: ");
     optionsDiv.append(colorDiv);
-    let sizeDiv = $("<div>").html("Sizes: ");
+    const sizeDiv = $("<div>").html("Sizes: ");
     optionsDiv.append(sizeDiv);
-    let otherOptionsDiv = $("<div>");
+    const otherOptionsDiv = $("<div>");
     optionsDiv.append(otherOptionsDiv);
 
     colorDiv.append(buildButton("Black", () => changeColor("Black")));
@@ -54,32 +54,32 @@ $(document).ready(() => {
     // }
 
 
-    var something = PDFJS.getDocument("./pdfs/Bye-Bye-Birdie-Full-Score-Vol-1.pdf")
-        .then(pdf => {
+    const something = PDFJS.getDocument("./pdfs/Bye-Bye-Birdie-Full-Score-Vol-1.pdf")
+        .then((pdf) => {
             console.log("Processed PDF");
-            pdf.getPage(1).then(page => {
+            pdf.getPage(1).then((page) => {
                 console.log("Processed page");
-                let sp = new ScorePage(page);
-                let leftScore = $("#leftScore");
+                const sp = new ScorePage(page);
+                const leftScore = $("#leftScore");
                 leftScore.append(sp.scoreWrapper);
 
                 sp.resize(leftScore.width(), leftScore.height());
                 $(window).resize(() => {
-                    console.log("Resizing!")
+                    console.log("Resizing!");
                     sp.resize(leftScore.width(), leftScore.height());
-                })
-            })
-            pdf.getPage(2).then(page => {
+                });
+            });
+            pdf.getPage(2).then((page) => {
                 console.log("Processed page");
-                let sp = new ScorePage(page);
-                let rightScore = $("#rightScore");
+                const sp = new ScorePage(page);
+                const rightScore = $("#rightScore");
                 rightScore.append(sp.scoreWrapper);
 
                 sp.resize(rightScore.width(), rightScore.height());
                 $(window).resize(() => {
-                    console.log("Resizing!")
+                    console.log("Resizing!");
                     sp.resize(rightScore.width(), rightScore.height());
-                })
-            })
+                });
+            });
         });
 });

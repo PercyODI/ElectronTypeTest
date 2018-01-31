@@ -12,7 +12,9 @@
     "no-conditional-assignment": true,
     "no-consecutive-blank-lines": false, 
     "object-literal-sort-keys": false,
-    "ordered-imports": false
+    "ordered-imports": false,
+    "no-reference": false,
+    "no-console": false
   },
   "jsRules": {
     "max-line-length": {
