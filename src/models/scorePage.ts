@@ -14,7 +14,6 @@ class ScorePage {
     public drawingStage: createjs.Stage;
     public scoreWrapper: JQuery<HTMLElement>;
     public originalSize: ISize;
-
     public dots: Array<{ x: number, y: number }> = [];
 
     constructor(pdfPage: PDFPageProxy) {
@@ -104,7 +103,6 @@ class ScorePage {
         this.drawingJqCanvas = undefined;
         this.drawingStage = undefined;
     }
-
 
     private setupStage() {
         const drawingCanvas = (this.drawingJqCanvas.get(0) as HTMLCanvasElement);
