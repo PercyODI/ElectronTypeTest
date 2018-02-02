@@ -24,7 +24,6 @@ class ScorePage {
     }
 
     public resize(width: number, height: number): void {
-
         const viewport = this.pdfPage.getViewport(1);
         const scale = Math.min(width / viewport.width, height / viewport.height);
 
@@ -33,6 +32,7 @@ class ScorePage {
         this.setupPdfAndDrawingCanvas(scale);
         this.setupStage();
     }
+
     private setupPdfAndDrawingCanvas(scale?: number) {
         if (scale === null || scale === undefined) { scale = 1; }
 
@@ -65,7 +65,6 @@ class ScorePage {
 
         // Set both the PDF and Drawing positions to absolute (0, 0)
         this.setCanvasPositionToAbsolute0();
-        console.log(`Pos: ${JSON.stringify(this.pdfJqCanvas.position())}`);
 
         // Set the wrapping div to the width of the PDF
         // (for alignment reasons)
@@ -74,7 +73,6 @@ class ScorePage {
 
     private setupDOM() {
         if (this.scoreWrapper === undefined || this.scoreWrapper === null) {
-            console.log("Making new Score Wrapper");
             this.scoreWrapper = $("<div>")
                 .css("position", "relative");
         }
@@ -109,30 +107,7 @@ class ScorePage {
         this.drawingStage = new createjs.Stage(drawingCanvas);
 
         this.drawingStage.update();
-
-        if (this.dots.length > 0) {
-            this.dots.forEach((dot) => {
-                const newCircle = new createjs.Shape();
-                newCircle.graphics
-                    .beginFill("black")
-                    .drawCircle(dot.x, dot.y, 5);
-                this.drawingStage.addChild(newCircle);
-                this.drawingStage.update();
-            });
-        }
-
-        this.drawingStage.on("stagemousedown", (event: createjs.MouseEvent) => {
-            const newCircle = new createjs.Shape();
-            newCircle.graphics
-                .beginFill("black")
-                .drawCircle(event.stageX, event.stageY, 5);
-            this.drawingStage.addChild(newCircle);
-            this.drawingStage.update();
-
-            this.dots.push({ x: event.stageX, y: event.stageY });
-        });
     }
-
 }
 
 export { ScorePage };

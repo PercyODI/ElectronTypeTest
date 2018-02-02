@@ -1,19 +1,11 @@
-// import {ITool} from "./ITool"
-import * as shortid from "shortid";
+import { AbstractTool } from ".";
+import * as $ from "jquery";
 
-class FreeDrawTool implements ITool {
-    public id: string;
+class FreeDrawTool extends AbstractTool {
     public toolName = "Free Draw Tool";
 
-    /**
-     *
-     */
-    constructor() {
-        this.id = shortid.generate();
-    }
-
-    public getUI() {
-        return $("<div>");
+    public getUI(): JQuery<HTMLElement> {
+        return $("<div>").html("Free Draw UI Here");
     }
 }
 
