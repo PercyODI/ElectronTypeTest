@@ -1,11 +1,11 @@
 import { ScorePage } from "../models/scorePage";
 import * as _ from "lodash";
-import { FreeDrawTool } from "./FreeDrawTool";
+import { AbstractTool, FreeDrawTool } from ".";
 
 class ToolController {
     private scorePages: ScorePage[] = [];
-    private currentTool: ITool;
-    private loadedTools: ITool[] = [];
+    private currentTool: AbstractTool;
+    private loadedTools: AbstractTool[] = [];
 
     constructor() {
         this.loadedTools.push(new FreeDrawTool());
