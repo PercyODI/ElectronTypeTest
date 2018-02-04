@@ -25,7 +25,13 @@ class ToolController {
     public addScorePage(scorePage: ScorePage) {
         this.scorePages.push(scorePage);
         console.log(this.scorePages);
-        this.scorePages[0].drawingStage.on("stagemousedown", () => alert("any event!"));
+        scorePage.bindToChangeEvent(() => this.updateScorePages());
+        this.setUpMouseEvents();
+    }
+
+    public updateScorePages() {
+        this.currentTool.redrawFromSave(this.scorePages[0].drawingStage, 2);
+        this.setUpMouseEvents();
     }
 
     public selectTool(id: string) {
@@ -35,6 +41,21 @@ class ToolController {
     private removeAllToolListeners() {
         this.scorePages.forEach((scorePage) => {
             scorePage.drawingStage.removeAllEventListeners();
+        });
+    }
+
+    private setUpMouseEvents() {
+        this.removeAllToolListeners();
+        this.scorePages.forEach((scorePage) => {
+            scorePage.drawingStage.on("stagemousedown", (evt: createjs.MouseEvent) => {
+                this.currentTool.onMouseEvent("stagemousedown", evt.localX, evt.localY, scorePage.drawingStage);
+            });
+            scorePage.drawingStage.on("stagemousemove", (evt: createjs.MouseEvent) => {
+                this.currentTool.onMouseEvent("stagemousemove", evt.localX, evt.localY, scorePage.drawingStage);
+            });
+            scorePage.drawingStage.on("stagemouseup", (evt: createjs.MouseEvent) => {
+                this.currentTool.onMouseEvent("stagemouseup", evt.localX, evt.localY, scorePage.drawingStage);
+            });
         });
     }
 }

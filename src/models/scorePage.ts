@@ -13,14 +13,14 @@ class ScorePage {
     public drawingJqCanvas: JQuery<HTMLElement>;
     public drawingStage: createjs.Stage;
     public scoreWrapper: JQuery<HTMLElement>;
-    public originalSize: ISize;
-    public dots: Array<{ x: number, y: number }> = [];
+    public onChange: Array<() => void> = [];
+    private originalSize: ISize;
 
     constructor(pdfPage: PDFPageProxy) {
         this.pdfPage = pdfPage;
         this.setupDOM();
         this.setupPdfAndDrawingCanvas();
-        this.setupStage();
+        this.fireChange();
     }
 
     public resize(width: number, height: number): void {
@@ -30,7 +30,17 @@ class ScorePage {
         this.removeDOM();
         this.setupDOM();
         this.setupPdfAndDrawingCanvas(scale);
-        this.setupStage();
+        this.fireChange();
+    }
+
+    public bindToChangeEvent(functionToAdd: () => void): void {
+        this.onChange.push(functionToAdd);
+    }
+
+    private fireChange(): void {
+        this.onChange.forEach((functionToCall) => {
+            functionToCall();
+        });
     }
 
     private setupPdfAndDrawingCanvas(scale?: number) {
@@ -59,9 +69,12 @@ class ScorePage {
             };
         }
         const drawingCanvas = (this.drawingJqCanvas.get(0) as HTMLCanvasElement);
-        drawingCanvas.height = this.originalSize.height;
-        drawingCanvas.width = this.originalSize.width;
-        this.drawingJqCanvas.css("width", Math.floor(viewport.width));
+
+        this.drawingJqCanvas.attr("height", this.originalSize.height * scale);
+        this.drawingJqCanvas.attr("width", this.originalSize.width * scale);
+        // drawingCanvas.height = this.originalSize.height;
+        // drawingCanvas.width = this.originalSize.width;
+        // this.drawingJqCanvas.css("width", Math.floor(viewport.width));
 
         // Set both the PDF and Drawing positions to absolute (0, 0)
         this.setCanvasPositionToAbsolute0();
@@ -69,6 +82,11 @@ class ScorePage {
         // Set the wrapping div to the width of the PDF
         // (for alignment reasons)
         this.scoreWrapper.width(viewport.width);
+
+        this.drawingStage = new createjs.Stage(drawingCanvas) as createjs.Stage;
+        this.drawingStage.scaleX = scale;
+        this.drawingStage.scaleY = scale;
+        this.drawingStage.update();
     }
 
     private setupDOM() {
@@ -100,13 +118,6 @@ class ScorePage {
         this.pdfJqCanvas = undefined;
         this.drawingJqCanvas = undefined;
         this.drawingStage = undefined;
-    }
-
-    private setupStage() {
-        const drawingCanvas = (this.drawingJqCanvas.get(0) as HTMLCanvasElement);
-        this.drawingStage = new createjs.Stage(drawingCanvas);
-
-        this.drawingStage.update();
     }
 }
 

@@ -23,6 +23,7 @@
   "author": "GitHub",
   "license": "CC0-1.0",
   "devDependencies": {
+    "@types/nedb": "^1.8.5",
     "@types/pdfjs-dist": "^0.1.1",
     "@types/shortid": "0.0.29",
     "electron": "^1.8.1",
@@ -37,6 +38,7 @@
     "@types/pdf": "0.0.31",
     "jquery": "^3.3.1",
     "lodash": "^4.17.4",
+    "nedb": "^1.8.0",
     "pdfjs-dist": "^2.0.301",
     "shortid": "^2.2.8"
   }
