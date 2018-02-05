@@ -25,12 +25,16 @@ class ToolController {
     public addScorePage(scorePage: ScorePage) {
         this.scorePages.push(scorePage);
         console.log(this.scorePages);
-        scorePage.bindToChangeEvent(() => this.updateScorePages());
+        // scorePage.bindToChangeEvent(() => this.updateScorePages());
         this.setUpMouseEvents();
     }
 
     public updateScorePages() {
-        this.currentTool.redrawFromSave(this.scorePages[0].drawingStage, 2);
+        this.loadedTools.forEach((tool) => {
+            this.scorePages.forEach((scorePage) => {
+                tool.redrawFromSave(scorePage.drawingStage, 2);
+            });
+        });
         this.setUpMouseEvents();
     }
 

@@ -14,9 +14,6 @@ class FreeDrawTool extends AbstractTool {
 
     public redrawFromSave(drawingStage: createjs.Stage, page: number): void {
         this.datastore.find({ type: "line", page }, (err: any, docs: any[]) => {
-            console.log(drawingStage);
-            console.log("Found Docs:");
-            console.log(docs);
             docs.forEach((doc:
                 {
                     type: string,
@@ -25,14 +22,19 @@ class FreeDrawTool extends AbstractTool {
                     end: { x: number, y: number },
                 }) => {
                 const newLine = new createjs.Shape();
+
                 newLine.graphics
                     .beginStroke("blue")
+                    .setStrokeStyle(10)
                     .moveTo(doc.start.x, doc.start.y)
                     .lineTo(doc.end.x, doc.end.y);
                 drawingStage.addChild(newLine);
+                drawingStage.update();
             });
-            drawingStage.update();
+
+            console.log(drawingStage.children);
         });
+
     }
 
     public onMouseEvent(type: string, stageX: number, stageY: number, drawingStage: createjs.Stage): void {
